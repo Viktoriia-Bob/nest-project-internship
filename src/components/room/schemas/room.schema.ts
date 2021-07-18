@@ -1,0 +1,24 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
+import { User } from 'src/components/user/schemas/user.schema';
+
+@Schema({
+  versionKey: false,
+  timestamps: true,
+  collection: 'rooms',
+})
+export class Room {
+  @Prop({ required: true })
+  title: string;
+
+  @Prop({ type: Types.ObjectId, required: true, ref: 'User' })
+  ownerId: User;
+
+  @Prop({ default: null })
+  description: string;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
+  usersId: User[];
+}
+
+export const RoomSchema = SchemaFactory.createForClass(Room);
