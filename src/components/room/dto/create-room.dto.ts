@@ -1,4 +1,4 @@
-import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class CreateRoomDto {
@@ -13,5 +13,8 @@ export class CreateRoomDto {
 
   @IsString()
   description: string;
+
+  @IsMongoId({ each: true })
+  @IsOptional()
   usersId: Array<Types.ObjectId>;
 }
