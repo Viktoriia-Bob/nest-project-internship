@@ -16,6 +16,7 @@ export class UpdateRoomDto {
   @IsOptional()
   description?: string;
 
+  @IsMongoId({ each: true })
   @IsOptional()
   usersId?: Array<Types.ObjectId>;
 }
