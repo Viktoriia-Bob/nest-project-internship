@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import * as mongoose from 'mongoose';
 import { User } from 'src/components/user/schemas/user.schema';
 
 @Schema({
@@ -11,13 +11,16 @@ export class Room {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ type: Types.ObjectId, required: true, ref: 'User' })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' })
   ownerId: User;
 
   @Prop({ default: null })
   description: string;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    default: [],
+  })
   usersId: User[];
 }
 

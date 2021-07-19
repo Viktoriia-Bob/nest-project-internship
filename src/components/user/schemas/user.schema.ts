@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import * as mongoose from 'mongoose';
 import { Room } from 'src/components/room/schemas/room.schema';
 
 @Schema({
@@ -17,7 +17,7 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ type: Types.ObjectId, default: null, ref: 'Room' })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, default: null, ref: 'Room' })
   roomId: Room;
 
   @Prop({ default: 'https://picsum.photos/200/300' })
