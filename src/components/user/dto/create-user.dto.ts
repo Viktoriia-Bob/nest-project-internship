@@ -2,6 +2,7 @@ import {
   IsEmail,
   IsMongoId,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUrl,
   Matches,
@@ -17,6 +18,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsEmail()
+  @IsNotEmpty()
   readonly email: string;
 
   @IsString()
@@ -29,9 +31,11 @@ export class CreateUserDto {
 
   @IsString()
   @IsMongoId()
+  @IsOptional()
   readonly roomId: Types.ObjectId;
 
   @IsString()
   @IsUrl()
+  @IsOptional()
   readonly avatar: string;
 }

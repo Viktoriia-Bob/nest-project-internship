@@ -12,6 +12,7 @@ export class CreateRoomDto {
   ownerId: Types.ObjectId;
 
   @IsString()
+  @IsOptional()
   description: string;
 
   @IsMongoId({ each: true })
