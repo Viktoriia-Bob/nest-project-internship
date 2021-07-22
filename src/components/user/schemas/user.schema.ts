@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Room } from 'src/components/room/schemas/room.schema';
+import { statusEnum } from '../enums/status.enum';
 
 @Schema({
   versionKey: false,
@@ -22,6 +23,15 @@ export class User {
 
   @Prop({ default: 'https://picsum.photos/200/300' })
   avatar: string;
+
+  @Prop()
+  accessToken: string;
+
+  @Prop()
+  refreshToken: string;
+
+  @Prop({ enum: Object.values(statusEnum), default: statusEnum.pending })
+  status: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

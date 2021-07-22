@@ -31,8 +31,7 @@ export class MessageService {
   }
 
   async create(createMessageDto: CreateMessageDto): Promise<IMessage> {
-    const newMessage = new this.messageRepository(createMessageDto);
-    return newMessage.save();
+    return this.messageRepository.create(createMessageDto);
   }
 
   async remove(id: string): Promise<IMessage> {

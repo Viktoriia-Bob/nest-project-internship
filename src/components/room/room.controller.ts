@@ -7,12 +7,14 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { UserService } from '../user/user.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { IRoom } from './interfaces/room.interface';
 import { RoomService } from './room.service';
 
+@ApiTags('Rooms')
 @Controller('rooms')
 export class RoomController {
   constructor(
@@ -30,6 +32,7 @@ export class RoomController {
     return this.roomService.getById(id);
   }
 
+  @ApiBody({ type: CreateRoomDto })
   @Post()
   createRoom(@Body() createRoomDto: CreateRoomDto): Promise<IRoom> {
     return this.roomService.create(createRoomDto);
@@ -41,6 +44,7 @@ export class RoomController {
     return this.roomService.remove(id);
   }
 
+  @ApiBody({ type: UpdateRoomDto })
   @Patch(':id')
   updateRoom(
     @Param('id') id: string,

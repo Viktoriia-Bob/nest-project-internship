@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { RoomService } from '../room/room.service';
+import * as bcrypt from 'bcrypt';
 
+import { RoomService } from '../room/room.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
@@ -35,8 +36,8 @@ export class UserService {
   }
 
   async create(userDto: CreateUserDto): Promise<IUser> {
-    const newUser = new this.userRepository(userDto);
-    return newUser.save();
+    const hashPassword = await this.hashPassword(userDto.password);
+    return this.userRepository.create({ ...userDto, password: hashPassword });
   }
 
   async remove(id: string): Promise<IUser> {
@@ -95,5 +96,10 @@ export class UserService {
 
   async getUserByEmail(email: string): Promise<IUser> {
     return this.userRepository.findOne({ email }).lean();
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    return bcrypt.hash(password, salt);
   }
 }

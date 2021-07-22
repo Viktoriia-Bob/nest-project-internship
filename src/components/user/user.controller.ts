@@ -13,7 +13,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { IUser } from './interfaces/user.interface';
 import { UserService } from './user.service';
 import { RoomService } from '../room/room.service';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(
@@ -31,6 +33,7 @@ export class UserController {
     return this.userService.getById(id);
   }
 
+  @ApiBody({ type: CreateUserDto })
   @Post()
   createUser(@Body() createUserDto: CreateUserDto): Promise<IUser> {
     return this.userService.create(createUserDto);
@@ -41,6 +44,7 @@ export class UserController {
     return this.userService.remove(id);
   }
 
+  @ApiBody({ type: UpdateUserDto })
   @Patch(':id')
   update(
     @Param('id') id: string,
