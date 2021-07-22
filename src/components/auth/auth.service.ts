@@ -155,7 +155,7 @@ export class AuthService {
       subject: 'Verify user',
       html: `
         <h3>Hello, ${user.name}!</h3>
-        <p>Please use this <a href="${forgotLink}">link</a> to confirm your account.</p>
+        <p>Please use this <a href="${forgotLink}">link</a> to confirm your account for change password.</p>
       `,
     });
   }
