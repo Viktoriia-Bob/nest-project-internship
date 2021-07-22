@@ -77,12 +77,17 @@ export class AuthService {
     userId: string,
     changePasswordDto: ChangePasswordDto,
   ): Promise<boolean> {
-    const password = await this.userService.hashPassword(
-      changePasswordDto.password,
-    );
-    await this.userService.update(userId, { password });
-    await this.tokenService.deleteAll(userId);
-    return true;
+    const user = await this.userService.getById(userId);
+    if (user && user.status === 'changePassword') {
+      user.status = statusEnum.active;
+      await this.userService.update(userId, user);
+      const password = await this.userService.hashPassword(
+        changePasswordDto.password,
+      );
+      await this.userService.update(userId, { password });
+      await this.tokenService.deleteAll(userId);
+      return true;
+    }
   }
 
   async confirm(token: string): Promise<IUser> {
@@ -143,7 +148,7 @@ export class AuthService {
       throw new BadRequestException('Invalid email');
     }
     const token = await this.signUser(user);
-    const forgotLink = `${this.clientAppUrl}/auth/forgotPassword=${token}`;
+    const forgotLink = `${this.clientAppUrl}/auth/forgotPassword?token=${token}`;
     await this.mailService.send({
       from: this.configService.get<string>('MAIL_ADDRESS'),
       to: user.email,
@@ -153,5 +158,18 @@ export class AuthService {
         <p>Please use this <a href="${forgotLink}">link</a> to confirm your account.</p>
       `,
     });
+  }
+
+  async getForgotPassword(token: string) {
+    const data = await this.verifyToken(token);
+    const user = await this.userService.getById(data._id);
+
+    await this.tokenService.delete(data._id, token);
+
+    if (user && user.status === statusEnum.active) {
+      user.status = statusEnum.changePassword;
+      return this.userService.update(String(user._id), user);
+    }
+    throw new BadRequestException('Confirmation Error');
   }
 }

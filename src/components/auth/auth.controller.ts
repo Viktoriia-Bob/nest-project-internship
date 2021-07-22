@@ -47,6 +47,12 @@ export class AuthController {
     return this.authService.forgotPassword(forgotPasswordDto);
   }
 
+  @Get('/forgotPassword')
+  async getForgotPassword(@Query() query: ConfirmAccountDto): Promise<boolean> {
+    await this.authService.getForgotPassword(query.token);
+    return true;
+  }
+
   @ApiBody({ type: ChangePasswordDto })
   @Patch('/changePassword/:userId')
   async changePassword(
