@@ -8,7 +8,6 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { UserService } from '../user/user.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { IRoom } from './interfaces/room.interface';
@@ -17,10 +16,7 @@ import { RoomService } from './room.service';
 @ApiTags('Rooms')
 @Controller('rooms')
 export class RoomController {
-  constructor(
-    private readonly roomService: RoomService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly roomService: RoomService) {}
 
   @Get()
   listRooms(): Promise<IRoom[]> {
@@ -40,12 +36,11 @@ export class RoomController {
 
   @Delete(':id')
   removeRoom(@Param('id') id: string): Promise<IRoom> {
-    this.userService.removeAllUsersFromRoom(id);
     return this.roomService.remove(id);
   }
 
   @ApiBody({ type: UpdateRoomDto })
-  @Patch(':id')
+  @Patch('update/:id')
   updateRoom(
     @Param('id') id: string,
     @Body() updateRoomDto: UpdateRoomDto,

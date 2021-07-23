@@ -1,21 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateMessageDto {
+export class JoinToRoomDto {
   @IsString()
   @ApiProperty()
-  @IsNotEmpty()
   @IsMongoId()
-  ownerId: string;
+  @IsNotEmpty()
+  userId: string;
 
   @IsString()
   @ApiProperty()
-  @IsNotEmpty()
   @IsMongoId()
+  @IsNotEmpty()
   roomId: string;
-
-  @IsString()
-  @ApiProperty()
-  @IsNotEmpty()
-  text: string;
 }

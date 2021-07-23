@@ -15,6 +15,9 @@ export class User {
   @Prop({ required: true })
   email: string;
 
+  @Prop({ default: false })
+  emailVerify: boolean;
+
   @Prop({ required: true })
   password: string;
 
@@ -23,12 +26,6 @@ export class User {
 
   @Prop({ default: 'https://picsum.photos/200/300' })
   avatar: string;
-
-  @Prop()
-  accessToken: string;
-
-  @Prop()
-  refreshToken: string;
 
   @Prop({ enum: Object.values(statusEnum), default: statusEnum.pending })
   status: string;

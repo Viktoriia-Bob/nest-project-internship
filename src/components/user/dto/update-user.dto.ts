@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsEnum,
   IsMongoId,
   IsNotEmpty,
@@ -9,7 +10,6 @@ import {
   Matches,
   MinLength,
 } from 'class-validator';
-import { Types } from 'mongoose';
 import { statusEnum } from '../enums/status.enum';
 
 export class UpdateUserDto {
@@ -19,6 +19,10 @@ export class UpdateUserDto {
   @MinLength(2)
   @IsOptional()
   readonly name?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  emailVerify?: boolean;
 
   @IsString()
   @ApiProperty()
@@ -34,7 +38,7 @@ export class UpdateUserDto {
   @ApiProperty()
   @IsMongoId()
   @IsOptional()
-  readonly roomId?: Types.ObjectId;
+  readonly roomId?: string;
 
   @IsString()
   @ApiProperty()
@@ -45,13 +49,5 @@ export class UpdateUserDto {
   @IsString()
   @IsEnum(statusEnum)
   @IsOptional()
-  readonly status?: string;
-
-  @IsString()
-  @IsOptional()
-  accessToken?: string;
-
-  @IsString()
-  @IsOptional()
-  refreshToken?: string;
+  readonly status?: statusEnum;
 }

@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { UserModule } from './components/user/user.module';
-import { RoomModule } from './components/room/room.module';
-import { MessageModule } from './components/message/message.module';
-import { AuthModule } from './components/auth/auth.module';
-import { TokenModule } from './components/token/token.module';
-import { MailModule } from './components/mail/mail.module';
+import { UserModule } from '../user/user.module';
+import { RoomModule } from '../room/room.module';
+import { MessageModule } from '../message/message.module';
+import AuthModule from '../auth/auth.module';
+import { TokenModule } from '../token/token.module';
+import { MailModule } from '../mail/mail.module';
 import { AppController } from './app.controller';
 
 @Module({

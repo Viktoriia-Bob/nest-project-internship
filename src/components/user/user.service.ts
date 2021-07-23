@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Injectable, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import * as bcrypt from 'bcrypt';
@@ -8,11 +8,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { IUser } from './interfaces/user.interface';
+import { JoinToRoomDto } from './dto/join-to-room.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel('User') private userRepository: Model<UserEntity>,
+    @Inject(forwardRef(() => RoomService))
     private readonly roomService: RoomService,
   ) {}
 
@@ -56,7 +58,7 @@ export class UserService {
     );
   }
 
-  async joinToRoom(userId: string, roomId: string) {
+  async joinToRoom({ userId, roomId }: JoinToRoomDto) {
     const user = await this.getById(userId);
     if (user.roomId !== null) {
       await this.roomService.leaveUserFromRoom(user.roomId, userId);
@@ -64,7 +66,7 @@ export class UserService {
     await this.roomService.joinUserToRoom(roomId, userId);
     return this.userRepository.findByIdAndUpdate(
       Types.ObjectId(userId),
-      { roomId: Types.ObjectId(roomId) },
+      { roomId },
       { new: true },
     );
   }
@@ -88,14 +90,16 @@ export class UserService {
 
   async removeAllUsersFromRoom(roomId: string) {
     return this.userRepository.updateMany(
-      { roomId: Types.ObjectId(roomId) },
+      { roomId },
       { roomId: null },
       { new: true },
     );
   }
 
   async getUserByEmail(email: string): Promise<IUser> {
-    return this.userRepository.findOne({ email }).lean();
+    return this.userRepository
+      .findOne({ email: email.toLocaleLowerCase() })
+      .lean();
   }
 
   async hashPassword(password: string): Promise<string> {

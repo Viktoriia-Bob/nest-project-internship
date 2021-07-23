@@ -12,16 +12,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IUser } from './interfaces/user.interface';
 import { UserService } from './user.service';
-import { RoomService } from '../room/room.service';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { JoinToRoomDto } from './dto/join-to-room.dto';
 
 @ApiTags('Users')
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly roomService: RoomService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get()
   listUsers(): Promise<IUser[]> {
@@ -45,7 +42,7 @@ export class UserController {
   }
 
   @ApiBody({ type: UpdateUserDto })
-  @Patch(':id')
+  @Patch('update/:id')
   update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -53,12 +50,10 @@ export class UserController {
     return this.userService.update(id, updateUserDto);
   }
 
+  @ApiBody({ type: JoinToRoomDto })
   @Post('/join-to-room')
-  async joinToRoom(
-    @Body('userId') userId: string,
-    @Body('roomId') roomId: string,
-  ) {
-    return this.userService.joinToRoom(userId, roomId);
+  async joinToRoom(@Body() joinToRoomDto: JoinToRoomDto) {
+    return this.userService.joinToRoom(joinToRoomDto);
   }
 
   @Post('/leave-from-room')

@@ -14,8 +14,7 @@ import { TokenService } from '../token/token.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { IUser } from '../user/interfaces/user.interface';
 import { ITokenPayload } from './interfaces/token-payload.interface';
-import { CreateUserTokenDto } from '../token/dto/create-user-token.dto';
-import { SignInDto } from './dto/signin.dto';
+import { SignInDto } from './dto/sign-in.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ConfigService } from '@nestjs/config';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
@@ -41,17 +40,22 @@ export class AuthService {
     return true;
   }
 
-  async signIn({ email, password }: SignInDto): Promise<IUser> {
-    const user = await this.userService.getUserByEmail(email);
-
-    if (user && (await bcrypt.compare(password, user.password))) {
-      user.accessToken = await this.signUser(user);
-      return this.userService.update(String(user._id), user);
+  async signIn({ email }: SignInDto): Promise<any> {
+    const user = await this.userService.getUserByEmail(
+      email.toLocaleLowerCase(),
+    );
+    if (user.emailVerify === true) {
+      const { accessToken, refreshToken } = await this.signUser(user);
+      return {
+        user,
+        accessToken,
+        refreshToken,
+      };
     }
-    throw new BadRequestException('Invalid credentials');
+    throw new BadRequestException('User not verify email');
   }
 
-  async signUser(user: IUser, withStatusCheck = false): Promise<string> {
+  async signUser(user: IUser, withStatusCheck = true) {
     if (withStatusCheck && user.status !== statusEnum.active) {
       throw new MethodNotAllowedException();
     }
@@ -61,16 +65,28 @@ export class AuthService {
       name: user.name,
       email: user.email,
     };
-    const token = await this.generateToken(tokenPayload);
-    const expireAt = moment().add(1, 'day').toISOString();
+    const accessToken = await this.generateToken(tokenPayload, {
+      expiresIn: '1 day',
+    });
+    const refreshToken = await this.generateToken(tokenPayload, {
+      expiresIn: '7 days',
+    });
+    const expireAtForAccess = moment().add(1, 'day').toISOString();
+    const expireAtForRefresh = moment().add(7, 'day').toISOString();
 
     await this.saveToken({
-      token,
-      expireAt,
+      token: accessToken,
+      expireAt: expireAtForAccess,
       userId: user._id,
     });
 
-    return token;
+    await this.saveToken({
+      token: refreshToken,
+      expireAt: expireAtForRefresh,
+      userId: user._id,
+    });
+
+    return { accessToken, refreshToken };
   }
 
   async changePassword(
@@ -88,6 +104,7 @@ export class AuthService {
       await this.tokenService.deleteAll(userId);
       return true;
     }
+    throw new BadRequestException();
   }
 
   async confirm(token: string): Promise<IUser> {
@@ -98,14 +115,15 @@ export class AuthService {
 
     if (user && user.status === statusEnum.pending) {
       user.status = statusEnum.active;
+      user.emailVerify = true;
       return this.userService.update(String(user._id), user);
     }
     throw new BadRequestException('Confirmation Error');
   }
 
   async sendConfirmation(user: IUser) {
-    const token = await this.signUser(user, false);
-    const confirmLink = `${this.clientAppUrl}/auth/confirm?token=${token}`;
+    const { accessToken } = await this.signUser(user, false);
+    const confirmLink = `${this.clientAppUrl}/auth/confirm?token=${accessToken}`;
     await this.mailService.send({
       from: this.configService.get<string>('MAIL_ADDRESS'),
       to: user.email,
@@ -128,7 +146,6 @@ export class AuthService {
     try {
       const data = await this.jwtService.verify(token);
       const tokenExists = await this.tokenService.exists(data._id, token);
-
       if (tokenExists) {
         return data;
       }
@@ -138,17 +155,19 @@ export class AuthService {
     }
   }
 
-  private async saveToken(createUserTokenDto: CreateUserTokenDto) {
+  private async saveToken(createUserTokenDto) {
     return this.tokenService.create(createUserTokenDto);
   }
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<void> {
-    const user = await this.userService.getUserByEmail(forgotPasswordDto.email);
+    const user = await this.userService.getUserByEmail(
+      forgotPasswordDto.email.toLocaleLowerCase(),
+    );
     if (!user) {
       throw new BadRequestException('Invalid email');
     }
-    const token = await this.signUser(user);
-    const forgotLink = `${this.clientAppUrl}/auth/forgotPassword?token=${token}`;
+    const accessToken = await this.signUser(user);
+    const forgotLink = `${this.clientAppUrl}/auth/forgot-password?token=${accessToken}`;
     await this.mailService.send({
       from: this.configService.get<string>('MAIL_ADDRESS'),
       to: user.email,
@@ -166,10 +185,21 @@ export class AuthService {
 
     await this.tokenService.delete(data._id, token);
 
-    if (user && user.status === statusEnum.active) {
+    if (user && user.emailVerify === true) {
       user.status = statusEnum.changePassword;
       return this.userService.update(String(user._id), user);
     }
     throw new BadRequestException('Confirmation Error');
+  }
+
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.userService.getUserByEmail(
+      email.toLocaleLowerCase(),
+    );
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return user;
+    }
+    throw new BadRequestException('Invalid credentials');
   }
 }

@@ -29,6 +29,7 @@ export default class AllExceptionsFilter implements ExceptionFilter {
     ) {
       return response.status(exception.getStatus()).json(exception.response);
     }
+    console.log(exception.message);
     return response.status(500).json({
       statusCode: 500,
       message: 'Internal Server Error',

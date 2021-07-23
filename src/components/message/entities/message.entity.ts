@@ -1,7 +1,7 @@
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
 export class MessageEntity extends Document {
-  readonly ownerId: Types.ObjectId;
-  readonly roomId: Types.ObjectId;
+  readonly ownerId: string;
+  readonly roomId: string;
   readonly text: string;
 }

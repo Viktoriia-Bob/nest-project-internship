@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { Types } from 'mongoose';
 
 export class CreateRoomDto {
   @IsString()
@@ -12,7 +11,7 @@ export class CreateRoomDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsMongoId()
-  ownerId: Types.ObjectId;
+  ownerId: string;
 
   @IsString()
   @ApiProperty()
@@ -22,5 +21,5 @@ export class CreateRoomDto {
   @IsMongoId({ each: true })
   @ApiProperty()
   @IsOptional()
-  usersId: Array<Types.ObjectId>;
+  usersId: Array<string>;
 }
