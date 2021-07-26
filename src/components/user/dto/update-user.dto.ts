@@ -10,44 +10,53 @@ import {
   Matches,
   MinLength,
 } from 'class-validator';
+import { rolesEnum } from '../enums/roles.enum';
 import { statusEnum } from '../enums/status.enum';
 
 export class UpdateUserDto {
+  @IsOptional()
   @IsString()
   @ApiProperty()
   @IsNotEmpty()
   @MinLength(2)
-  @IsOptional()
   readonly name?: string;
 
-  @IsBoolean()
   @IsOptional()
+  @IsBoolean()
+  @ApiProperty()
   emailVerify?: boolean;
 
+  @IsOptional()
   @IsString()
   @ApiProperty()
   @IsNotEmpty()
-  @IsOptional()
   @Matches(
     /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/,
     { message: 'Weak password' },
   )
   readonly password?: string;
 
+  @IsOptional()
   @IsString()
   @ApiProperty()
   @IsMongoId()
-  @IsOptional()
   readonly roomId?: string;
 
+  @IsOptional()
   @IsString()
   @ApiProperty()
   @IsUrl()
-  @IsOptional()
   readonly avatar?: string;
 
-  @IsString()
-  @IsEnum(statusEnum)
   @IsOptional()
+  @IsString()
+  @ApiProperty()
+  @IsEnum(statusEnum)
   readonly status?: statusEnum;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
+  @IsEnum(rolesEnum)
+  readonly role?: rolesEnum;
 }

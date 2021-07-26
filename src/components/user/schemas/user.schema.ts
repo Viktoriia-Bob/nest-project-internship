@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Room } from 'src/components/room/schemas/room.schema';
+import { rolesEnum } from '../enums/roles.enum';
 import { statusEnum } from '../enums/status.enum';
 
 @Schema({
@@ -28,7 +29,10 @@ export class User {
   avatar: string;
 
   @Prop({ enum: Object.values(statusEnum), default: statusEnum.pending })
-  status: string;
+  status: statusEnum;
+
+  @Prop({ enum: Object.values(rolesEnum), default: rolesEnum.user })
+  role: rolesEnum;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

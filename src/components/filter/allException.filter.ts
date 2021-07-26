@@ -12,6 +12,7 @@ import { Response } from 'express';
 @Catch()
 export default class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
+    console.log(exception.message);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     if (exception.code === 11000) {
@@ -29,7 +30,6 @@ export default class AllExceptionsFilter implements ExceptionFilter {
     ) {
       return response.status(exception.getStatus()).json(exception.response);
     }
-    console.log(exception.message);
     return response.status(500).json({
       statusCode: 500,
       message: 'Internal Server Error',

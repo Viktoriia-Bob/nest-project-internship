@@ -9,6 +9,8 @@ import AuthModule from '../auth/auth.module';
 import { TokenModule } from '../token/token.module';
 import { MailModule } from '../mail/mail.module';
 import { AppController } from './app.controller';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from '../auth/guards/role-auth.guard';
 
 @Module({
   imports: [
@@ -27,5 +29,6 @@ import { AppController } from './app.controller';
     MailModule,
   ],
   controllers: [AppController],
+  providers: [{ provide: APP_GUARD, useClass: RolesGuard }],
 })
 export class AppModule {}

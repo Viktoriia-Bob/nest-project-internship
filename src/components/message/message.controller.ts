@@ -6,14 +6,18 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import JwtAuthGuard from '../auth/guards/jwt-auth.guard';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { IMessage } from './interfaces/message.interface';
 import { MessageService } from './message.service';
 
 @ApiTags('Messages')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 @Controller('messages')
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}

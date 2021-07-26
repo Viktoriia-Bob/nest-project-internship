@@ -6,34 +6,35 @@ import {
   Patch,
   Post,
   Controller,
+  UseGuards,
 } from '@nestjs/common';
 
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IUser } from './interfaces/user.interface';
 import { UserService } from './user.service';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { JoinToRoomDto } from './dto/join-to-room.dto';
+import { Roles } from '../auth/decorators/role.decorator';
+import { rolesEnum } from './enums/roles.enum';
+import JwtAuthGuard from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Users')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // @Roles(rolesEnum.admin)
   @Get()
   listUsers(): Promise<IUser[]> {
+    console.log('in get users');
     return this.userService.list();
   }
 
   @Get(':id')
   getById(@Param('id') id: string): Promise<IUser> {
     return this.userService.getById(id);
-  }
-
-  @ApiBody({ type: CreateUserDto })
-  @Post()
-  createUser(@Body() createUserDto: CreateUserDto): Promise<IUser> {
-    return this.userService.create(createUserDto);
   }
 
   @Delete(':id')

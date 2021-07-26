@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { rolesEnum } from '../enums/roles.enum';
 import { statusEnum } from '../enums/status.enum';
 
 export interface IUser {
@@ -10,4 +11,5 @@ export interface IUser {
   readonly roomId: string;
   readonly avatar: string;
   status: statusEnum;
+  role: rolesEnum;
 }

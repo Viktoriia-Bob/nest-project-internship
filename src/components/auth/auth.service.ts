@@ -7,11 +7,9 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as moment from 'moment';
 import * as bcrypt from 'bcrypt';
-import { SignOptions } from 'jsonwebtoken';
 import { UserService } from 'src/components/user/user.service';
 import { MailService } from '../mail/mail.service';
 import { TokenService } from '../token/token.service';
-import { CreateUserDto } from '../user/dto/create-user.dto';
 import { IUser } from '../user/interfaces/user.interface';
 import { ITokenPayload } from './interfaces/token-payload.interface';
 import { SignInDto } from './dto/sign-in.dto';
@@ -19,6 +17,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { ConfigService } from '@nestjs/config';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { statusEnum } from '../user/enums/status.enum';
+import { SignUpDto } from './dto/sign-up.dto';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +33,7 @@ export class AuthService {
     this.clientAppUrl = this.configService.get<string>('CLIENT_APP_URL');
   }
 
-  async signUp(createUserDto: CreateUserDto): Promise<boolean> {
+  async signUp(createUserDto: SignUpDto): Promise<boolean> {
     const user = await this.userService.create(createUserDto);
     await this.sendConfirmation(user);
     return true;
@@ -44,7 +43,7 @@ export class AuthService {
     const user = await this.userService.getUserByEmail(
       email.toLocaleLowerCase(),
     );
-    if (user.emailVerify === true) {
+    if (user.emailVerify) {
       const { accessToken, refreshToken } = await this.signUser(user);
       return {
         user,
@@ -62,13 +61,13 @@ export class AuthService {
 
     const tokenPayload: ITokenPayload = {
       _id: user._id,
-      name: user.name,
       email: user.email,
+      role: user.role,
     };
-    const accessToken = await this.generateToken(tokenPayload, {
+    const accessToken = this.jwtService.sign(tokenPayload, {
       expiresIn: '1 day',
     });
-    const refreshToken = await this.generateToken(tokenPayload, {
+    const refreshToken = this.jwtService.sign(tokenPayload, {
       expiresIn: '7 days',
     });
     const expireAtForAccess = moment().add(1, 'day').toISOString();
@@ -135,16 +134,9 @@ export class AuthService {
     });
   }
 
-  private async generateToken(
-    data: ITokenPayload,
-    options?: SignOptions,
-  ): Promise<string> {
-    return this.jwtService.sign(data, options);
-  }
-
-  private async verifyToken(token): Promise<any> {
+  async verifyToken(token): Promise<any> {
     try {
-      const data = await this.jwtService.verify(token);
+      const data = (await this.jwtService.verify(token)) as ITokenPayload;
       const tokenExists = await this.tokenService.exists(data._id, token);
       if (tokenExists) {
         return data;
@@ -166,7 +158,7 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException('Invalid email');
     }
-    const accessToken = await this.signUser(user);
+    const { accessToken } = await this.signUser(user);
     const forgotLink = `${this.clientAppUrl}/auth/forgot-password?token=${accessToken}`;
     await this.mailService.send({
       from: this.configService.get<string>('MAIL_ADDRESS'),
