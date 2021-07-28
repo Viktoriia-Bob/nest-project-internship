@@ -1,5 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
@@ -8,7 +8,7 @@ import { MailModule } from '../mail/mail.module';
 import { TokenModule } from '../token/token.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import JwtStrategy from './jwt.strategy';
+import JwtStrategy from './strategies/jwt.strategy';
 import LocalStrategy from './strategies/local.strategy';
 
 @ApiTags('Auth')
@@ -19,8 +19,12 @@ import LocalStrategy from './strategies/local.strategy';
     MailModule,
     TokenModule,
     PassportModule,
-    JwtModule.register({
-      secret: `${process.env.SECRET_OR_KEY}`,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('SECRET_OR_KEY'),
+      }),
+      inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],

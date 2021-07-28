@@ -25,10 +25,9 @@ import JwtAuthGuard from '../auth/guards/jwt-auth.guard';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // @Roles(rolesEnum.admin)
+  @Roles(rolesEnum.admin)
   @Get()
   listUsers(): Promise<IUser[]> {
-    console.log('in get users');
     return this.userService.list();
   }
 
