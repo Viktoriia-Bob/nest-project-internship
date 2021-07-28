@@ -1,4 +1,4 @@
-export interface IMessage {
+export default interface IMessage {
   readonly ownerId: string;
   readonly roomId: string;
   readonly text: string;

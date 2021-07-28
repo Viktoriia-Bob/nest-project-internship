@@ -1,14 +1,14 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { UserService } from '../user/user.service';
-import { CreateRoomDto } from './dto/create-room.dto';
-import { UpdateRoomDto } from './dto/update-room.dto';
-import { RoomEntity } from './entities/room.entity';
-import { IRoom } from './interfaces/room.interface';
+import UserService from '../user/user.service';
+import CreateRoomDto from './dto/create-room.dto';
+import UpdateRoomDto from './dto/update-room.dto';
+import RoomEntity from './entities/room.entity';
+import IRoom from './interfaces/room.interface';
 
 @Injectable()
-export class RoomService {
+export default class RoomService {
   constructor(
     @InjectModel('Room') private roomRepository: Model<RoomEntity>,
     @Inject(forwardRef(() => UserService))

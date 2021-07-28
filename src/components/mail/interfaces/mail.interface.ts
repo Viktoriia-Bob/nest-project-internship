@@ -1,4 +1,4 @@
-export interface IMailgunData {
+export default interface IMailgunData {
   readonly from: string;
   readonly to: string;
   readonly subject: string;

@@ -13,7 +13,7 @@ import {
 import { rolesEnum } from '../enums/roles.enum';
 import { statusEnum } from '../enums/status.enum';
 
-export class UpdateUserDto {
+export default class UpdateUserDto {
   @IsOptional()
   @IsString()
   @ApiProperty()

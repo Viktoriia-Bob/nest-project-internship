@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class ConfirmAccountDto {
+export default class ConfirmAccountDto {
   @IsNotEmpty()
   @ApiProperty()
   token: string;

@@ -12,7 +12,6 @@ import { Response } from 'express';
 @Catch()
 export default class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
-    console.log(exception.message);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     if (exception.code === 11000) {

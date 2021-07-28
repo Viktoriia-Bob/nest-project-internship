@@ -10,16 +10,16 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import JwtAuthGuard from '../auth/guards/jwt-auth.guard';
-import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
-import { IMessage } from './interfaces/message.interface';
-import { MessageService } from './message.service';
+import CreateMessageDto from './dto/create-message.dto';
+import UpdateMessageDto from './dto/update-message.dto';
+import IMessage from './interfaces/message.interface';
+import MessageService from './message.service';
 
 @ApiTags('Messages')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 @Controller('messages')
-export class MessageController {
+export default class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
   @Get()

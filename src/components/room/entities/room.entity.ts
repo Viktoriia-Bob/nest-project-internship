@@ -1,6 +1,6 @@
 import { Document, Types } from 'mongoose';
 
-export class RoomEntity extends Document {
+export default class RoomEntity extends Document {
   readonly title: string;
   readonly ownerId: Types.ObjectId;
   readonly description: string;

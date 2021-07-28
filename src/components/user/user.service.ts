@@ -2,16 +2,15 @@ import { forwardRef, Injectable, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-
-import { RoomService } from '../room/room.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from './entities/user.entity';
-import { IUser } from './interfaces/user.interface';
-import { JoinToRoomDto } from './dto/join-to-room.dto';
+import RoomService from '../room/room.service';
+import CreateUserDto from './dto/create-user.dto';
+import UpdateUserDto from './dto/update-user.dto';
+import UserEntity from './entities/user.entity';
+import IUser from './interfaces/user.interface';
+import JoinToRoomDto from './dto/join-to-room.dto';
 
 @Injectable()
-export class UserService {
+export default class UserService {
   constructor(
     @InjectModel('User') private userRepository: Model<UserEntity>,
     @Inject(forwardRef(() => RoomService))

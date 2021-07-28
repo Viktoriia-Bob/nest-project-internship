@@ -8,12 +8,11 @@ import {
   Controller,
   UseGuards,
 } from '@nestjs/common';
-
-import { UpdateUserDto } from './dto/update-user.dto';
-import { IUser } from './interfaces/user.interface';
-import { UserService } from './user.service';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
-import { JoinToRoomDto } from './dto/join-to-room.dto';
+import UpdateUserDto from './dto/update-user.dto';
+import IUser from './interfaces/user.interface';
+import UserService from './user.service';
+import JoinToRoomDto from './dto/join-to-room.dto';
 import { Roles } from '../auth/decorators/role.decorator';
 import { rolesEnum } from './enums/roles.enum';
 import JwtAuthGuard from '../auth/guards/jwt-auth.guard';
@@ -22,7 +21,7 @@ import JwtAuthGuard from '../auth/guards/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 @Controller('users')
-export class UserController {
+export default class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Roles(rolesEnum.admin)

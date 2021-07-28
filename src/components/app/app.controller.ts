@@ -3,7 +3,7 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('App')
 @Controller('app')
-export class AppController {
+export default class AppController {
   private start: number;
   constructor() {
     this.start = Date.now();

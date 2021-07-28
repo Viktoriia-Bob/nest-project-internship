@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import { rolesEnum } from '../enums/roles.enum';
 import { statusEnum } from '../enums/status.enum';
 
-export interface IUser {
+export default interface IUser {
   readonly _id: Types.ObjectId;
   readonly name: string;
   readonly email: string;

@@ -1,8 +1,8 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from '../user/user.module';
-import { RoomController } from './room.controller';
-import { RoomService } from './room.service';
+import UserModule from '../user/user.module';
+import RoomController from './room.controller';
+import RoomService from './room.service';
 import { RoomSchema } from './schemas/room.schema';
 
 @Module({
@@ -14,4 +14,4 @@ import { RoomSchema } from './schemas/room.schema';
   providers: [RoomService],
   exports: [RoomService],
 })
-export class RoomModule {}
+export default class RoomModule {}

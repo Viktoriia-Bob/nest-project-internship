@@ -10,16 +10,16 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import JwtAuthGuard from '../auth/guards/jwt-auth.guard';
-import { CreateRoomDto } from './dto/create-room.dto';
-import { UpdateRoomDto } from './dto/update-room.dto';
-import { IRoom } from './interfaces/room.interface';
-import { RoomService } from './room.service';
+import CreateRoomDto from './dto/create-room.dto';
+import UpdateRoomDto from './dto/update-room.dto';
+import IRoom from './interfaces/room.interface';
+import RoomService from './room.service';
 
 @ApiTags('Rooms')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 @Controller('rooms')
-export class RoomController {
+export default class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
   @Get()

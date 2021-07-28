@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 
-export interface IRoom {
+export default interface IRoom {
   readonly title: string;
   readonly ownerId: Types.ObjectId;
   readonly description: string;

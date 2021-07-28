@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as Mailgun from 'mailgun-js';
-import { IMailgunData } from './interfaces/mail.interface';
+import IMailgunData from './interfaces/mail.interface';
 
 @Injectable()
-export class MailService {
+export default class MailService {
   private mg = new Mailgun({
     apiKey: this.configService.get<string>('MAILGUN_API_KEY'),
     domain: this.configService.get<string>('MAILGUN_API_DOMAIN'),

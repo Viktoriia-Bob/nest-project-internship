@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateMessageDto {
+export default class CreateMessageDto {
   @IsString()
   @ApiProperty()
   @IsNotEmpty()
