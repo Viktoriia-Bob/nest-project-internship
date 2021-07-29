@@ -69,7 +69,7 @@ export default class AuthService {
     const accessToken = this.jwtService.sign(tokenPayload, {
       expiresIn: '1 day',
     });
-    await this.redisClient.set(accessToken, 'accessToken', 'EX', 60 * 60);
+    await this.redisClient.set(accessToken, 'accessToken', 'EX', 60 * 60 * 24);
     const refreshToken = this.jwtService.sign(tokenPayload, {
       expiresIn: '7 days',
     });
@@ -77,7 +77,7 @@ export default class AuthService {
       refreshToken,
       'refreshToken',
       'EX',
-      60 * 60 * 24,
+      60 * 60 * 24 * 7,
     );
     return { accessToken, refreshToken };
   }
@@ -182,5 +182,11 @@ export default class AuthService {
       return user;
     }
     throw new BadRequestException('Invalid credentials');
+  }
+
+  async refreshTokens(token) {
+    const data = await this.verifyToken(token);
+    const user = await this.userService.getUserByEmail(data.email);
+    return this.signUser(user);
   }
 }

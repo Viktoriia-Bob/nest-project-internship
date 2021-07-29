@@ -10,6 +10,7 @@ import AuthModule from '../auth/auth.module';
 import MailModule from '../mail/mail.module';
 import AppController from './app.controller';
 import RolesGuard from '../auth/guards/role-auth.guard';
+import ChatModule from '../chat/chat.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import RolesGuard from '../auth/guards/role-auth.guard';
       }),
       inject: [ConfigService],
     }),
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: RolesGuard }],

@@ -16,6 +16,7 @@ import ForgotPasswordDto from './dto/forgot-password.dto';
 import SignUpDto from './dto/sign-up.dto';
 import SignInDto from './dto/sign-in.dto';
 import LocalAuthGuard from './guards/local-auth.guard';
+import RefreshTokensDto from './dto/refresh-tokens.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -62,5 +63,11 @@ export default class AuthController {
     @Body() changePasswordDto: ChangePasswordDto,
   ): Promise<boolean> {
     return this.authService.changePassword(userId, changePasswordDto);
+  }
+
+  @ApiBody({ type: RefreshTokensDto })
+  @Get('/refresh-tokens')
+  async refreshTokens(@Query() query: RefreshTokensDto) {
+    return this.authService.refreshTokens(query.token);
   }
 }
