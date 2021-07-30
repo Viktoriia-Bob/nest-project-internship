@@ -6,7 +6,7 @@ import IMailgunData from './interfaces/mail.interface';
 export default class MailService {
   constructor(private mailgunService: MailgunService) {}
 
-  send(data: IMailgunData) {
-    this.mailgunService.sendEmail(data);
+  async send(data: IMailgunData) {
+    await this.mailgunService.sendEmail(data);
   }
 }
