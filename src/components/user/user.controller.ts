@@ -18,13 +18,13 @@ import { rolesEnum } from './enums/roles.enum';
 import JwtAuthGuard from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Users')
-@UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
+// @UseGuards(JwtAuthGuard)
+// @ApiBearerAuth()
 @Controller('users')
 export default class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Roles(rolesEnum.admin)
+  // @Roles(rolesEnum.admin)
   @Get()
   listUsers(): Promise<IUser[]> {
     return this.userService.list();

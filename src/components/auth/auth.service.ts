@@ -41,7 +41,7 @@ export default class AuthService {
     return true;
   }
 
-  async signIn({ email }: SignInDto): Promise<any> {
+  async signIn({ email }: SignInDto) {
     const user = await this.userService.getUserByEmail(
       email.toLocaleLowerCase(),
     );
@@ -128,19 +128,16 @@ export default class AuthService {
   }
 
   async verifyToken(token): Promise<any> {
-    try {
-      const data = (await this.jwtService.verify(token)) as ITokenPayload;
-      const tokenExists = await this.redisClient.exists(token);
-      if (tokenExists) {
-        return data;
-      }
-      throw new UnauthorizedException();
-    } catch (error) {
-      throw new UnauthorizedException();
+    const payload = await this.jwtService.verify(token);
+    const data = payload as ITokenPayload;
+    const tokenExists = await this.redisClient.exists(token);
+    if (tokenExists) {
+      return data;
     }
+    throw new UnauthorizedException();
   }
 
-  async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<void> {
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
     const user = await this.userService.getUserByEmail(
       forgotPasswordDto.email.toLocaleLowerCase(),
     );
@@ -174,9 +171,7 @@ export default class AuthService {
   }
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.userService.getUserByEmail(
-      email.toLocaleLowerCase(),
-    );
+    const user = await this.userService.getUserByEmail(email);
 
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;

@@ -9,19 +9,22 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { Roles } from '../auth/decorators/role.decorator';
 import JwtAuthGuard from '../auth/guards/jwt-auth.guard';
+import { rolesEnum } from '../user/enums/roles.enum';
 import CreateRoomDto from './dto/create-room.dto';
 import UpdateRoomDto from './dto/update-room.dto';
 import IRoom from './interfaces/room.interface';
 import RoomService from './room.service';
 
 @ApiTags('Rooms')
-@UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
+// @UseGuards(JwtAuthGuard)
+// @ApiBearerAuth()
 @Controller('rooms')
 export default class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
+  // @Roles(rolesEnum.admin)
   @Get()
   listRooms(): Promise<IRoom[]> {
     return this.roomService.list();

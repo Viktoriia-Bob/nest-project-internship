@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './components/app/app.module';
 import RedisIoAdapter from './components/chat/redis.adapter';
-import AllExceptionsFilter from './components/filter/allException.filter';
+import AllExceptionsFilter from './filter/allException.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });

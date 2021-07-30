@@ -38,7 +38,12 @@ export default class UserService {
 
   async create(userDto: CreateUserDto): Promise<IUser> {
     const hashPassword = await this.hashPassword(userDto.password);
-    return this.userRepository.create({ ...userDto, password: hashPassword });
+    const emailLowerCase = userDto.email.toLocaleLowerCase();
+    return this.userRepository.create({
+      ...userDto,
+      password: hashPassword,
+      email: emailLowerCase,
+    });
   }
 
   async remove(id: string): Promise<IUser> {
@@ -96,9 +101,7 @@ export default class UserService {
   }
 
   async getUserByEmail(email: string): Promise<IUser> {
-    return this.userRepository
-      .findOne({ email: email.toLocaleLowerCase() })
-      .lean();
+    return this.userRepository.findOne({ email }).lean();
   }
 
   async hashPassword(password: string): Promise<string> {
