@@ -2,14 +2,12 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './components/app/app.module';
-import RedisIoAdapter from './components/chat/redis.adapter';
 import AllExceptionsFilter from './filter/allException.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new AllExceptionsFilter());
-  app.useWebSocketAdapter(new RedisIoAdapter());
   const config = new DocumentBuilder()
     .addBearerAuth()
     .setTitle('Chat')

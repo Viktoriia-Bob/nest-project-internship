@@ -25,30 +25,32 @@ export default class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
   // @Roles(rolesEnum.admin)
-  @Get()
-  listMessages(): Promise<IMessage[]> {
+  @Get('/')
+  async listMessages(): Promise<IMessage[]> {
     return this.messageService.list();
   }
 
-  @Get(':id')
-  getMessageById(@Param('id') id: string): Promise<IMessage> {
+  @Get('/:id')
+  async getMessageById(@Param('id') id: string): Promise<IMessage> {
     return this.messageService.getById(id);
   }
 
   @ApiBody({ type: CreateMessageDto })
-  @Post()
-  createMessage(@Body() createMessageDto: CreateMessageDto): Promise<IMessage> {
+  @Post('/')
+  async createMessage(
+    @Body() createMessageDto: CreateMessageDto,
+  ): Promise<IMessage> {
     return this.messageService.create(createMessageDto);
   }
 
-  @Delete(':id')
-  removeMessage(@Param('id') id: string): Promise<IMessage> {
+  @Delete('/:id')
+  async removeMessage(@Param('id') id: string): Promise<IMessage> {
     return this.messageService.remove(id);
   }
 
   @ApiBody({ type: UpdateMessageDto })
-  @Patch(':id')
-  updateMessage(
+  @Patch('/:id')
+  async updateMessage(
     @Param('id') id: string,
     @Body() updateMessageDto: UpdateMessageDto,
   ): Promise<IMessage> {
@@ -56,7 +58,9 @@ export default class MessageController {
   }
 
   @Get('/by-user/:ownerId')
-  getAllMessagesByUser(@Param('ownerId') ownerId: string): Promise<IMessage[]> {
+  async getAllMessagesByUser(
+    @Param('ownerId') ownerId: string,
+  ): Promise<IMessage[]> {
     return this.messageService.getAllMessagesByUser(ownerId);
   }
 

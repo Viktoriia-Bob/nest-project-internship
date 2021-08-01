@@ -25,30 +25,30 @@ export default class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
   // @Roles(rolesEnum.admin)
-  @Get()
-  listRooms(): Promise<IRoom[]> {
+  @Get('/')
+  async listRooms(): Promise<IRoom[]> {
     return this.roomService.list();
   }
 
-  @Get(':id')
-  getRoomById(@Param('id') id: string): Promise<IRoom> {
+  @Get('/:id')
+  async getRoomById(@Param('id') id: string): Promise<IRoom> {
     return this.roomService.getById(id);
   }
 
   @ApiBody({ type: CreateRoomDto })
-  @Post()
-  createRoom(@Body() createRoomDto: CreateRoomDto): Promise<IRoom> {
+  @Post('/')
+  async createRoom(@Body() createRoomDto: CreateRoomDto): Promise<IRoom> {
     return this.roomService.create(createRoomDto);
   }
 
-  @Delete(':id')
-  removeRoom(@Param('id') id: string): Promise<IRoom> {
+  @Delete('/:id')
+  async removeRoom(@Param('id') id: string): Promise<IRoom> {
     return this.roomService.remove(id);
   }
 
   @ApiBody({ type: UpdateRoomDto })
-  @Patch('update/:id')
-  updateRoom(
+  @Patch('/:id')
+  async updateRoom(
     @Param('id') id: string,
     @Body() updateRoomDto: UpdateRoomDto,
   ): Promise<IRoom> {
@@ -56,7 +56,7 @@ export default class RoomController {
   }
 
   @Get('/by-user/:ownerId')
-  getAllRoomsByUser(@Param('ownerId') ownerId: string): Promise<IRoom[]> {
+  async getAllRoomsByUser(@Param('ownerId') ownerId: string): Promise<IRoom[]> {
     return this.roomService.getAllRoomsByUser(ownerId);
   }
 }

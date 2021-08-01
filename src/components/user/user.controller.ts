@@ -25,24 +25,24 @@ export default class UserController {
   constructor(private readonly userService: UserService) {}
 
   // @Roles(rolesEnum.admin)
-  @Get()
-  listUsers(): Promise<IUser[]> {
+  @Get('/')
+  async listUsers(): Promise<IUser[]> {
     return this.userService.list();
   }
 
-  @Get(':id')
-  getById(@Param('id') id: string): Promise<IUser> {
+  @Get('/:id')
+  async getById(@Param('id') id: string): Promise<IUser> {
     return this.userService.getById(id);
   }
 
-  @Delete(':id')
-  removeUser(@Param('id') id: string): Promise<IUser> {
+  @Delete('/:id')
+  async removeUser(@Param('id') id: string): Promise<IUser> {
     return this.userService.remove(id);
   }
 
   @ApiBody({ type: UpdateUserDto })
-  @Patch('update/:id')
-  update(
+  @Patch('/:id')
+  async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<IUser> {
@@ -61,7 +61,7 @@ export default class UserController {
   }
 
   @Get('/room/:roomId')
-  getAllUsersFromRoom(@Param('roomId') roomId: string): Promise<IUser[]> {
+  async getAllUsersFromRoom(@Param('roomId') roomId: string): Promise<IUser[]> {
     return this.userService.getAllUsersFromRoom(roomId);
   }
 }

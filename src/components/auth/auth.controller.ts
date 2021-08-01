@@ -39,7 +39,7 @@ export default class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('/sign-in')
   async signIn(@Body() signInDto: SignInDto): Promise<any> {
-    return this.authService.signIn(signInDto);
+    return await this.authService.signIn(signInDto);
   }
 
   @ApiBody({ type: ForgotPasswordDto })
@@ -69,5 +69,10 @@ export default class AuthController {
   @Get('/refresh-tokens')
   async refreshTokens(@Query() query: RefreshTokensDto) {
     return this.authService.refreshTokens(query.token);
+  }
+
+  @Get('/sign/in/by/token')
+  async signInByToken(@Query('token') token: string) {
+    return this.authService.signInByToken(token);
   }
 }

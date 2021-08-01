@@ -69,7 +69,6 @@ export default class AuthService {
     const accessToken = this.jwtService.sign(tokenPayload, {
       expiresIn: '1 day',
     });
-    await this.redisClient.set(accessToken, 'accessToken', 'EX', 60 * 60 * 24);
     const refreshToken = this.jwtService.sign(tokenPayload, {
       expiresIn: '7 days',
     });
@@ -130,8 +129,7 @@ export default class AuthService {
   async verifyToken(token): Promise<any> {
     const payload = await this.jwtService.verify(token);
     const data = payload as ITokenPayload;
-    const tokenExists = await this.redisClient.exists(token);
-    if (tokenExists) {
+    if (this.userService.getUserByEmail(data.email)) {
       return data;
     }
     throw new UnauthorizedException();
@@ -183,5 +181,20 @@ export default class AuthService {
     const data = await this.verifyToken(token);
     const user = await this.userService.getUserByEmail(data.email);
     return this.signUser(user);
+  }
+
+  async signInByToken(token: string) {
+    const payload = await this.jwtService.verify(token);
+    const data = payload as ITokenPayload;
+    const user = await this.userService.getUserByEmail(data.email);
+    if (user.emailVerify) {
+      const { accessToken, refreshToken } = await this.signUser(user);
+      return {
+        user,
+        accessToken,
+        refreshToken,
+      };
+    }
+    throw new BadRequestException('User not verify email');
   }
 }
